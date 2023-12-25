@@ -16,8 +16,8 @@ public class LoseInfo : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            SceneManager.LoadSceneAsync(1);
-            SceneManager.UnloadSceneAsync(3);
+            SceneManager.LoadSceneAsync(FindObjectOfType<LevelManager>().nextlevel, LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync("GameOver");
         }
     }
 }

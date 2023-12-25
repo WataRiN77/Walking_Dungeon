@@ -6,26 +6,18 @@ using UnityEngine.SceneManagement;
 public class GameStart : MonoBehaviour
 {
 
-    void Start()
+    void Awake()
     {
-        int c = SceneManager.sceneCount;
-        for(int i = 0; i < c; i++)
-        {
-            Scene scene = SceneManager.GetSceneAt(i);
-            if(scene.name != "SampleScene")
-            {
-                SceneManager.UnloadSceneAsync(i);
-            }
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyUp(KeyCode.Space))
         {
-            SceneManager.LoadScene("Level_1");
-            SceneManager.UnloadScene("SampleScene");
+            SceneManager.LoadSceneAsync("Level_1", LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync("SampleScene");
         }
     }
 }

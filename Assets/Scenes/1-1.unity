@@ -293,6 +293,7 @@ MonoBehaviour:
   player: {fileID: 49294621}
   MovingPoint: 10
   LoseFlag: 0
+  LevelManager: {fileID: 0}
 --- !u!1 &400231769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1812,5 +1813,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1614047813}
-  - {fileID: 2017975318}
   - {fileID: 1815078629}
+  - {fileID: 2017975318}

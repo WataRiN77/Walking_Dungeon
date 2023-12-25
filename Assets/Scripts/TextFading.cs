@@ -20,6 +20,7 @@ public class TextFading : MonoBehaviour
         {
             textToUse.color = new Color(textToUse.color.r, textToUse.color.g, textToUse.color.b, textToUse.color.a + (Time.deltaTime * timeMultiplier));
         }
+        //Debug.Log("TextFadeIn Done.");
     }
 
     void TextFadeOut()
@@ -29,31 +30,32 @@ public class TextFading : MonoBehaviour
         {
             textToUse.color = new Color(textToUse.color.r, textToUse.color.g, textToUse.color.b, textToUse.color.a - (Time.deltaTime * timeMultiplier));
         }
-    }
-    
-    void TextReset()
-    {
-        textToUse.text = "Use WASD to move around.\nEach step costs you 1 Moving Point.";
-        textToUse.color = new Color(35, 35, 35, 1);
-        textToUse.fontSize = 96;
-        textToUse.alignment = TextAlignmentOptions.Left;
-        changeFlag = true;
-        
+        //Debug.Log("TextFadeOut Done.");
     }
 
     void EnterWorld()
     {
-        SceneManager.LoadSceneAsync(2);
+        //Debug.Log("Enter World Successfully.");
+        SceneManager.LoadSceneAsync(FindObjectOfType<LevelManager>().nextlevel, LoadSceneMode.Additive);
+        SceneManager.UnloadSceneAsync("LEVEL_1");
     }
 
-    void Awake()
+    void Start()
     {
+        //SceneManager.UnloadSceneAsync("SampleScene");
+        
+        Debug.Log(textToUse.text);
+        Debug.Log(FindObjectOfType<LevelManager>().nextlevel);
         Invoke("TextFadeIn",  2.0f);
         Invoke("TextFadeOut", 2.0f);
         //Invoke("TextReset",   2.0f);
         Invoke("EnterWorld", 2.0f);
-
         
+    }
+
+    void Update()
+    {
+        textToUse.text = FindObjectOfType<LevelManager>().nextlevel;
     }
 
     void OnGUI()
