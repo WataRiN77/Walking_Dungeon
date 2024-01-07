@@ -14,7 +14,7 @@ public class LoseInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyUp(KeyCode.Space))
         {
             SceneManager.LoadSceneAsync(FindObjectOfType<LevelManager>().nextlevel, LoadSceneMode.Additive);
             SceneManager.UnloadSceneAsync("GameOver");

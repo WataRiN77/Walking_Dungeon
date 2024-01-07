@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     public Transform player;
-    //public Tilemap player_color;
+    public Renderer player_color;
 
     /*float max_x =  7.6f;
     float min_x =  0.1f;
@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
         endFlag = false;
         backFlag = FindObjectOfType<LevelManager>().backFlag;
         jumpContinueFlag = FindObjectOfType<LevelManager>().jumpContinueFlag;
+        jumpActivated = false;
 
         if(!backFlag)
         {
@@ -65,8 +66,8 @@ public class PlayerMovement : MonoBehaviour
             }
             
         }
-        Debug.Log(X_Coordinate);
-        Debug.Log(Y_Coordinate);
+        //Debug.Log(X_Coordinate);
+        //Debug.Log(Y_Coordinate);
 
         player.position = new Vector3(X_Coordinate * 1.1f, (Y_Coordinate -3) * 1.1f, player.position.z);
 
@@ -81,6 +82,9 @@ public class PlayerMovement : MonoBehaviour
         // Check if Obstacle Cell or Edge of the map.
         RefreshState();
         CheckState();
+
+        //string now = X_Coordinate.ToString() + Y_Coordinate.ToString();
+        //Debug.Log(now);
         
         if(Input.GetKeyUp("w") && checkW && WallW)
         {
@@ -95,6 +99,9 @@ public class PlayerMovement : MonoBehaviour
             Y_Coordinate += 1;
 
             if(backFlag) backFlag = false;
+
+            // Check if stepping on a trap.
+            CheckTrap();
 
         }
         if(Input.GetKeyUp("a") && checkA && WallA)
@@ -111,6 +118,9 @@ public class PlayerMovement : MonoBehaviour
 
             if(backFlag) backFlag = false;
 
+            // Check if stepping on a trap.
+            CheckTrap();
+
         }
         if(Input.GetKeyUp("s") && checkS && WallS)
         {
@@ -125,6 +135,9 @@ public class PlayerMovement : MonoBehaviour
             Y_Coordinate -= 1;
 
             if(backFlag) backFlag = false;
+
+            // Check if stepping on a trap.
+            CheckTrap();
 
         }
         if(Input.GetKeyUp("d") && checkD && WallD)
@@ -141,44 +154,61 @@ public class PlayerMovement : MonoBehaviour
 
             if(backFlag) backFlag = false;
 
+            // Check if stepping on a trap.
+            CheckTrap();
+
         }
 
         // CLIMB
         if((Input.GetKeyUp(KeyCode.Space) && FindObjectOfType<LevelManager>().jumpFlag /* Already get ability */) || jumpActivated)
         {
-            if((!WallW) && (!WallA) && (!WallS) && (!WallD))
-            {
-                Debug.Log("You are not currently by a WALL CELL.");
-            }
-            else
-            {
-                jumpActivated = true;
+            jumpActivated = true;
                 
-                if(Input.GetKeyUp("w"))
+            if(Input.GetKeyUp("w"))
+            {
+                if(!WallW)
                 {
-                    if(!WallW) Jump('w');
-                    else       jumpActivated = false;
+                    Jump('w');
+                    CheckTrap();
                 }
-
-                if(Input.GetKeyUp("a"))
-                {
-                    if(!WallA) Jump('a');
-                    else       jumpActivated = false;
-                }
-                
-                if(Input.GetKeyUp("s"))
-                {
-                    if(!WallS) Jump('s');
-                    else       jumpActivated = false;
-                }
-
-                if(Input.GetKeyUp("d"))
-                {
-                    if(!WallD) Jump('d');
-                    else       jumpActivated = false;
-                }
-
+                else       jumpActivated = false;
             }
+
+            if(Input.GetKeyUp("a"))
+            {
+                if(!WallA)
+                {
+                    Jump('a');
+                    CheckTrap();
+                }
+                else       jumpActivated = false;
+            }
+                
+            if(Input.GetKeyUp("s"))
+            {
+                if(!WallS)
+                {
+                    Jump('s');
+                    CheckTrap();
+                }
+                else       jumpActivated = false;
+            }
+
+            if(Input.GetKeyUp("d"))
+            {
+                if(!WallD)
+                {
+                    Jump('d');
+                    CheckTrap();
+                }
+                else       jumpActivated = false;
+            }
+
+        }
+
+        if(jumpActivated)
+        {
+
         }
 
         // Lose when MovingPoint reaches ZERO and not in END cell.
@@ -207,11 +237,14 @@ public class PlayerMovement : MonoBehaviour
         // Go to previous level.
         // 1-1 does not have a PREVIOUS LEVEL, apparently.
         if(Input.GetKeyUp(KeyCode.Backspace))
-        {
-            MovingPoint -= 1;
+        { 
             if(X_Coordinate == FindObjectOfType<LevelManager>().start[0] &&
                Y_Coordinate == FindObjectOfType<LevelManager>().start[1] && 
-               FindObjectOfType<LevelManager>().LevelCount != 1)            FindObjectOfType<LevelManager>().prevLevel();
+               FindObjectOfType<LevelManager>().LevelCount != 1)
+            {
+                MovingPoint -= 1;
+                FindObjectOfType<LevelManager>().prevLevel();
+            }
         }
 
         // Check if SKILL CELL.
@@ -238,7 +271,7 @@ public class PlayerMovement : MonoBehaviour
             case 'd': target = right; break;
         }
 
-        for(int i = 0; i < wall.GetLength(0); i ++)
+        for(int i = 0; i < (wall).GetLength(0); i ++)
         {
             if(target[0] == wall[i,0] && target[1] == wall[i,1]) return false;
         }
@@ -348,6 +381,17 @@ public class PlayerMovement : MonoBehaviour
                     MovingPoint  -= 1;
                 }
                 break;
+        }
+    }
+
+    void CheckTrap()
+    {
+        int[]  currentPlace = new int[]{X_Coordinate, Y_Coordinate};
+        int[,] trap         = FindObjectOfType<LevelManager>().trap;
+
+        for(int i = 0; i < trap.GetLength(0); i++)
+        {
+            if(currentPlace[0] == trap[i, 0] && currentPlace[1] == trap[i, 1]) EndGame();
         }
     }
 

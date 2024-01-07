@@ -19,6 +19,7 @@ public class LevelManager : MonoBehaviour
     //public int[] normal =   new int[32]; No Need!
     public int[,]  wall   =   new int[2,16];
     public int[]   skill  =   new int[2];
+    public int[,]  trap   =   new int[2,16];
 
 
     void Start()
@@ -36,6 +37,7 @@ public class LevelManager : MonoBehaviour
             case 1:
                 start = new int[] {0, 3};
                 end   = new int[] {7, 0};
+                trap  = new int[,] {{114514, 1919810}}; // It works, but WHY?
                 break;
 
             case 2:
@@ -45,14 +47,22 @@ public class LevelManager : MonoBehaviour
                                     {3, 0}, {3, 1}, {3, 2},
                                     {5, 1}, {5, 2}, {5, 3}};
                 skill = new int[] {7, 3};
+                trap  = new int[,] {{114514, 1919810}}; // It works, but WHY?
                 break;
             
             case 3:
                 start = new int[] {0, 3};
                 end   = new int[] {7, 0};
                 wall  = new int[,] {{2, 0}, {2, 1}, {2, 2}, {2, 3},
-                                    {5, 0}, {5, 1}, {5, 2}, {5, 3},};
-                                    
+                                    {5, 0}, {5, 1}, {5, 2}, {5, 3}};
+                trap  = new int[,] {{114514, 1919810}}; // It works, but WHY?                                    
+                break;
+
+            case 4:
+                start = new int[] {0, 3};
+                end   = new int[] {7, 0};
+                wall  = new int[,] {{2, 0}, {2, 1}, {2, 2}, {2, 3}};
+                trap  = new int[,] {{3, 0}, {5, 1}, {5, 2}, {5, 3}};
                 break;
 
         }
@@ -65,16 +75,25 @@ public class LevelManager : MonoBehaviour
         //Debug.Log("Next Level");
         LevelCount += 1;
         prevlevel = "1-" + (LevelCount - 1).ToString();
-        SceneManager.LoadSceneAsync("LEVEL_1", LoadSceneMode.Additive);
-        Debug.Log(prevlevel);
-        SceneManager.UnloadSceneAsync(prevlevel);
-        switch(LevelCount)
+        if(LevelCount == 5)
         {
-            case 1: MovingPoint = 10; break;
-            case 2: MovingPoint = 16; break;
-            case 3: MovingPoint =  8; break;
+            SceneManager.LoadSceneAsync("END", LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync(prevlevel);
         }
-        backFlag = false;
+        else
+        {
+            SceneManager.LoadSceneAsync("LEVEL_1", LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync(prevlevel);
+            switch(LevelCount)
+            {
+                case 1: MovingPoint = 10; break;
+                case 2: MovingPoint = 16; break;
+                case 3: MovingPoint =  8; break;
+                case 4: MovingPoint = 10; break;
+            }
+            backFlag = false;
+        }
+        
 
     }
 

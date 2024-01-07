@@ -8,7 +8,10 @@ public class GameStart : MonoBehaviour
 
     void Awake()
     {
-        
+        //SceneManager.LoadSceneAsync("LevelManager", LoadSceneMode.Additive);
+        FindObjectOfType<LevelManager>().LevelCount = 1;
+        FindObjectOfType<LevelManager>().jumpFlag   = false;
+        FindObjectOfType<LevelManager>().jumpContinueFlag = false;
     }
 
     // Update is called once per frame
